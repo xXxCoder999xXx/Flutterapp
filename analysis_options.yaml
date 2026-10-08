@@ -1,0 +1,24 @@
+# analysis_options.yaml - statische Analyse als Qualitaets-Gate.
+# Jede Warnung ist ein Fehlschlag: lokal und CI rufen
+# `flutter analyze --fatal-warnings` auf. Die Strenge lebt in dieser einen
+# Datei - die Pipeline fuehrt Repo-Regeln aus, statt eigene zu definieren.
+
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    # Bewusst auf Fehler statt Warnung: lokales Urteil == CI-Urteil.
+    unused_import: error
+    dead_code: error
+
+linter:
+  rules:
+    # Async-Disziplin: unbeaufsichtigte Futures sind ein klassischer Fehler.
+    - unawaited_futures
+    # Kein print in Produktivcode (Logging-Regel 6.1.5 des Musters).
+    - avoid_print
+    - prefer_single_quotes

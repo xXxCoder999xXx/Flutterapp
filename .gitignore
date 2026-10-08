@@ -1,0 +1,44 @@
+# .gitignore - hält generierte Artefakte und lokale Umgebung aus dem Repository.
+# Grundsatz: Versioniert wird nur, was Quelle ist. Alles Reproduzierbare
+# (Build-Ausgaben) und alles Persönliche (IDE-Zustand) bleibt draußen.
+
+# Dart/Flutter-Build-Ausgaben - vollständig reproduzierbar, gehören nie ins Repository.
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Testergebnisse und Coverage-Berichte (werden von der CI erzeugt).
+coverage/
+
+# IDE- und Benutzerzustand (Android Studio, VS Code, Xcode).
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+**/xcuserdata/
+.ephemeral/
+
+# Lokale Umgebungs- und Geheimnisdateien. Sicherheitsregel des Projekts:
+# Secrets liegen NIE im Repository - lokal in .env-Dateien, in der CI
+# ausschließlich im Secret-Store der Plattform.
+.env
+.env.*
+
+# Signierschlüssel - niemals committen (Release-Signatur kommt in Phase 4).
+*.jks
+*.keystore
+key.properties
+*.p12
+*.mobileprovision
+
+# Lokale Entwicklungs-Zertifikate und private Schlüssel - niemals committen.
+certs/
+
+# Arbeitsordner des Schwachstellen-Scanners (Phase 2): exportierte Stückliste,
+# Schwachstellen-Datenbank und Berichte - alles reproduzierbar.
+scan/
+
+# Betriebssystem-Müll.
+.DS_Store
+Thumbs.db

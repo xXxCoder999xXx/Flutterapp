@@ -1,0 +1,20 @@
+# .gitattributes - einheitliche Zeilenenden und Diff-Verhalten.
+# Textdateien werden beim Commit auf LF normalisiert.
+
+* text=auto eol=lf
+
+# Windows-Skripte brauchen CRLF, Unix-Skripte LF.
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.sh  text eol=lf
+
+# Binärdateien nicht normalisieren.
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.ico      binary
+*.jar      binary
+*.keystore binary
+*.jks      binary
+*.p12      binary

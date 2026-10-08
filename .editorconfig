@@ -1,0 +1,22 @@
+# .editorconfig - einheitlicher Editor-Grundstil über alle Werkzeuge hinweg.
+# Verbindlich formatiert wird Dart-Code mit `dart format`; diese Datei deckt
+# zusätzlich die Dateien ab, die dart format nicht kennt (YAML, PowerShell,
+# Markdown, Plattformdateien).
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# PowerShell 5.1 erwartet zuverlässig CRLF (siehe scripts/, Regel aus dem Muster).
+[*.{ps1,psm1}]
+end_of_line = crlf
+
+# Markdown: Leerzeichen am Zeilenende können Bedeutung haben (Zeilenumbruch).
+[*.md]
+trim_trailing_whitespace = false

@@ -6,8 +6,9 @@ Das Projekt entsteht als vertikaler Durchstich: Automatisierungsfundament
 
 ## Grundprinzipien
 
-- Clean/Hexagonal-Architektur: Abhängigkeiten zeigen nur nach innen
-  (`domain` ← `application` ← `infrastructure`, `presentation`).
+- Flutter-MVVM mit Clean-Grenzen nach ADR-002: Views und ViewModels in `ui`,
+  reine Modelle und abstrakte Repositories in `domain`, technische Adapter in
+  `data`; Use Cases in `application` nur bei nachweisbarem Bedarf.
 - Open/Closed-Prinzip: neue Anforderungen durch Erweiterung, nicht Modifikation.
 - Jede Warnung ist ein Fehlschlag (strenge `analysis_options.yaml`).
 - Sicherheit durchgängig: keine Secrets im Repository, Least Privilege überall.

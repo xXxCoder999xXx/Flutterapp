@@ -8,7 +8,7 @@ Maintainer-Hinweise:
 - Vorbild: CLAUDE.md des identity-service (Musterprojekt). Übernommen wurden die Prinzipien, nicht die .NET-Mechanik.
 -->
 
-Mobiler Client (Flutter, Android + iOS) für den identity-service, aufgebaut nach Clean/Hexagonal-Architektur mit DevSecOps ab Tag 1. Der Vorgänger-Gedanke des Musters gilt auch hier: fehlende Struktur, fehlende Tests und fehlende Automatisierung dürfen nicht wieder entstehen. Diese Datei ist in jeder Sitzung verbindlich.
+Mobiler Client (Flutter, Android + iOS) für den identity-service, aufgebaut nach ADR-002 mit Flutter-MVVM, Clean-Grenzen und DevSecOps ab Tag 1. Der Vorgänger-Gedanke des Musters gilt auch hier: fehlende Struktur, fehlende Tests und fehlende Automatisierung dürfen nicht wieder entstehen. Diese Datei ist in jeder Sitzung verbindlich.
 
 ## 1. Arbeitsmodus: Mentor, kein Code-Generator
 
@@ -24,8 +24,8 @@ Mobiler Client (Flutter, Android + iOS) für den identity-service, aufgebaut nac
 ## 2. Projekt und Architektur
 
 - Vorgehen: vertikaler Durchstich (Walking Skeleton) – die App, ein Qualitäts-Gate, volle Pipeline; erst danach Breite. Phasen in verbindlicher Reihenfolge: 0 Governance → 1 Skeleton → 2 CI inkl. Supply-Chain → 3 geschützter Merge → 4 Release/Verteilung → 5 erster Use Case test-first → 6+ Breite. Aktueller Stand: neuester Bericht in `docs/sitzungen/`.
-- Schichten: `domain` ← `application` ← `infrastructure` und `presentation`. Abhängigkeiten zeigen nur nach innen. `domain` ist reines Dart: kein Flutter, keine Pakete, keine anderen Schichten. `application` kennt nur `domain` (Ports als abstrakte Klassen). `presentation` kennt nie `infrastructure`.
-- Composition Root ist ausschließlich `lib/main.dart`: nur Verdrahtung, keine Fachlogik.
+- Architektur nach ADR-002: Flutter-MVVM mit Clean-Grenzen. `ui` enthält feature-orientierte Views und ViewModels und kennt nie `data`. `domain` enthält bei Bedarf immutable Modelle und abstrakte Repositories als reines Dart: kein Flutter, keine Pakete, keine anderen Schichten. `data` enthält bei Bedarf Repository-Implementierungen und Services und kennt nie `ui`. `application` wird nur für komplexe oder in mehreren ViewModels wiederholte Anwendungslogik eingeführt und kennt dann nur `domain`; reine Weiterleitungs-Use-Cases sind nicht zulässig.
+- Composition Root ist ausschließlich `lib/main.dart`: nur Verdrahtung, keine Fachlogik. Abhängigkeiten werden per Konstruktor übergeben; ein DI-Paket erst bei nachweisbarem Bedarf.
 - Open/Closed: Eine neue Anforderung ist eine Erweiterung (Port + Adapter, Registrierung, Strategy/Decorator), keine Modifikation.
 - Der Architekturtest (`test/architecture/`, Quelltext-Scan ohne Zusatzbibliothek – Dart hat keine Laufzeit-Reflection in Flutter) erzwingt die Dependency Rule. Nie abschwächen, um etwas grün zu bekommen.
 - Bordmittel zuerst: State Management mit ChangeNotifier/ValueNotifier. Pakete (riverpod, bloc, get_it, dio, …) nur nach Aufnahme-Prüfung und ADR.
@@ -34,7 +34,7 @@ Mobiler Client (Flutter, Android + iOS) für den identity-service, aufgebaut nac
 
 ## 3. Repository und Befehle
 
-Karte: `lib/{domain,application,infrastructure,presentation}`, `test/` (unit, architecture, später widget/integration), `android/`, `ios/`, `scripts/` (PowerShell), `docs/adr/`, `docs/sitzungen/`, `docs/rules/`, `docs/governance/` (Ruleset), `.github/` (Workflows, `dependabot.yml`, `CODEOWNERS`). Wurzel: `pubspec.yaml`, `pubspec.lock` (wird committet), `analysis_options.yaml`, `.editorconfig`, `.gitattributes`.
+Karte: `lib/{domain,data,application,ui}` (`domain`, `data` und `application` nur bei Bedarf; `ui` feature-orientiert), `test/` (unit, architecture, später widget/integration), `android/`, `ios/`, `scripts/` (PowerShell), `docs/adr/`, `docs/sitzungen/`, `docs/rules/`, `docs/governance/` (Ruleset), `.github/` (Workflows, `dependabot.yml`, `CODEOWNERS`). Wurzel: `pubspec.yaml`, `pubspec.lock` (wird committet), `analysis_options.yaml`, `.editorconfig`, `.gitattributes`.
 
 Lokal == CI. Die Reihenfolge ist die Urteils-Hierarchie und bleibt:
 

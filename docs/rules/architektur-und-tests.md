@@ -11,12 +11,15 @@ Gilt zusätzlich zu `AGENTS.md`.
 
 ## Schichten und Code
 
+- Architektur nach ADR-002: Flutter-MVVM mit Clean-Grenzen und bedarfsgesteuerten Use Cases.
 - Dependency Rule (maschinell geprüft durch den Architekturtest):
-  - `domain`: reines Dart – kein `package:flutter*`, keine Drittpakete, keine Imports aus anderen Schichten.
-  - `application`: darf nur `domain` importieren; definiert Ports als abstrakte Klassen.
-  - `infrastructure`: implementiert Ports; darf `application`, `domain` und freigegebene Pakete importieren.
-  - `presentation`: Widgets und State; darf `application` und `domain` importieren, nie `infrastructure`.
+  - `ui`: feature-orientierte Views und ViewModels; darf `domain` und ein optionales `application` importieren, niemals `data`.
+  - `domain`: immutable Modelle und abstrakte Repositories bei Bedarf; reines Dart ohne `package:flutter*`, Drittpakete oder Imports aus anderen Schichten.
+  - `data`: Repository-Implementierungen und Services bei Bedarf; darf `domain` und freigegebene Pakete importieren, niemals `ui`.
+  - `application`: nur für komplexe oder in mehreren ViewModels wiederholte Anwendungslogik; darf nur `domain` importieren. Reine Weiterleitungs-Use-Cases sind nicht zulässig.
   - `main.dart` ist die Composition Root: nur Verdrahtung, keine Fachlogik.
+- Views enthalten keine Fach- oder Datenzugriffslogik. ViewModels besitzen den UI-State und kennen abstrakte Repositories, aber keine konkreten Services oder Repository-Implementierungen.
+- Daten und Ereignisse folgen dem unidirektionalen Datenfluss. Verzeichnisse und Abstraktionen werden erst bei konkretem Bedarf angelegt.
 - Einen Schichtverstoß nie dadurch „lösen", dass der Architekturtest angepasst wird.
 - Erweiterung statt Modifikation: Erst fragen „Welcher Port, welche Registrierung, welcher Erweiterungspunkt?", dann bestehenden Code anfassen.
 - Bordmittel zuerst: State Management mit ChangeNotifier/ValueNotifier. Kein Paket für eine einzelne Funktion; Pakete nur per ADR.
@@ -28,6 +31,6 @@ Gilt zusätzlich zu `AGENTS.md`.
 ## Tests
 
 - Test-first: Tests vor oder parallel zum Feature.
-- Ebenen: Unit (domain/application, keine externen Abhängigkeiten) · Widget (presentation) · Architektur (Quelltext-Scan) · Integration gegen den echten identity-service-Stack (ab Phase 5).
+- Ebenen: Unit (domain/application, ViewModels, Repositories und Services ohne externe Systeme) · Widget (ui) · Architektur (Quelltext-Scan) · Integration gegen den echten identity-service-Stack (ab Phase 5).
 - Missbrauchsfälle aus dem Threat Modeling werden Testfälle; Fail-closed-Pfade explizit testen.
 - Neue Test-Bibliotheken nur per ADR (minimale Abhängigkeiten).
